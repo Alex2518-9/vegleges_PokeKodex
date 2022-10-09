@@ -1,0 +1,71 @@
+.Card {
+    /* width: 12rem auto; */
+    background: #5bb0ca;
+    color: #e4c439;
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.2s ease-in-out all;
+  }
+  
+  .Card:hover {
+    transform: scale(1.05);
+  }
+  
+  .Card_id {
+    background: #e4c439;
+    width: 3rem;
+    color: #fff;
+    padding: 0.1rem;
+    font-weight: 700;
+    position: absolute;
+    border-radius: 0 0 10px 0;
+    top: 0;
+    left: 0;
+  }
+  
+  .Card_image {
+    display: block;
+    margin: auto;
+  }
+  
+  .Card_name {
+    text-transform: capitalize;
+    color: rgb(255, 255, 255);
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  
+  .Card_details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    color: #e4c439;
+    border: 1px solid #19044d;
+    border-radius: 20px;
+    background-color: #3d1d8f;
+  }
+
+  .Card_type{
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .Card_type p{
+    display: flex;
+    flex-direction: column;
+    background-color: #19044d;
+    width: 75px;
+    height: 30px;
+    padding: 5px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+  }

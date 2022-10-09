@@ -1,0 +1,35 @@
+
+
+.detailContainer{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #19044d;
+    color: #fff;
+}
+
+.detailCard{
+    max-width: 80%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e7d068;
+   
+}
+
+.left{
+    width: 400px;
+    height: 500px;
+    padding: 5px;
+}
+
+.left ul{
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+
