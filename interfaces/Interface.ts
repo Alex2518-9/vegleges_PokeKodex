@@ -1,12 +1,12 @@
-export interface Results{
-    name: string,
-    url: string
+export interface Results {
+  name: string,
+  url: string,
 }
 
-export interface Pokemons{
-    next: string,
-    previous: string,
-    results: Results[]
+export interface Pokemons {
+  next: string,
+  previous: string,
+  results: Results[]
 }
 
 export interface PokemonDetails {
@@ -40,8 +40,29 @@ export interface PokemonDetails {
       };
     };
   };
-  location_area_encounters?: string
-}
+  location_area_encounters?: string,
+  species: {
+    url: string,
+  }
+}[];
+
+export interface EvolutionChain {
+  chain?: {
+    evolves_to: {
+      evolves_to: {
+        species: {
+          name: string
+        }
+      }[],
+      species: {
+        name: string
+      }
+    }[],
+    species: {
+      name: string
+    }
+  }
+}[]
 
 export interface Location {
   location_area: {

@@ -1,64 +1,81 @@
-import axios from 'axios'
-import type { GetStaticPropsContext, NextPage } from 'next'
-import { useEffect, useState } from 'react'
-import PokemonCard from '../components/PokemonCard'
-import { PokemonDetails, Results } from '../interfaces/Interface'
-import styles from '../styles/Home.module.css'
+import axios from "axios";
+import type { GetStaticPropsContext, NextPage } from "next";
+import { useEffect, useState, useRef } from "react";
+import PokemonCard from "../components/PokemonCard";
+import { PokemonDetails, Results, Pokemons } from "../interfaces/Interface";
+import styles from "../styles/Home.module.css";
 
-const Home = ({initialPokemon}: any) => {
-
-console.log(initialPokemon);
-
-  const [pokemonDashboard, setPokemonDashboard] = useState<PokemonDetails[]>([]);
+const Home = ({ initialPokemon }: any) => {
+  const [pokemonDashboard, setPokemonDashboard] = useState<PokemonDetails[]>(
+    []
+  );
+  const [allPokemon, setAllPokemon] = useState<Pokemons>(initialPokemon);
   const [offset, setOffet] = useState(0);
   const [search, setSearch] = useState<string[]>([]);
   const [nextUrl, setNextUrl] = useState<string>(initialPokemon.next);
 
-console.log(pokemonDashboard);
+  const stopFetch = useRef(false);
 
+  console.log(pokemonDashboard);
+  // console.log(allPokemon);
 
-  useEffect(() => {
-    initialPokemon.results.map((pokemon: Results) => {
-      const getPokemon = async () => {
+  const getPokemon = async () => {
+    allPokemon.results.map(async (pokemon: Results) => {
+      if (pokemonDashboard.length < 20) {
         const res = await fetch(
           `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
         );
         const data = await res.json();
-        setPokemonDashboard((p) => [...p, data])
-      };
-      getPokemon();
+        setPokemonDashboard((p) => [...p, data]);
+      } else {
+        return null;
+      }
     });
-  }, [initialPokemon.results]);
+  };
 
+  useEffect(() => {
+    if (stopFetch.current === false) {
+      getPokemon();
+      return () => {
+        stopFetch.current = true;
+      };
+    }
+  }, []);
 
-//   const fetchPokemon = async (url: string, next: boolean) => {
-//     const response = await fetch(url)
-//     const nextPokemon = await response.json()
-
-//     setOffet(next ? offset + 20 : offset - 20)
-//     setPokemonDashboard((p) => [...p, nextPokemon])
-// }
-
-
-const searchedPokemon = [...pokemonDashboard].filter((data) => {
-  const pokemonType = data.types?.map((pokeType) => {
-    return pokeType.type.name;
+  const sortByIndexPokemons = [...pokemonDashboard].sort((a, b) => {
+    const intl = Intl.Collator(undefined, {
+      numeric: true,
+    });
+    let order = intl.compare(a.id.toString(), b.id.toString());
+    return order;
   });
-  
-  return search.length === 0
-    ? true
-    : search.every((characters: string) =>
-        data.name.toLowerCase().includes(characters.toLowerCase())
-      ) ||
-      search.every((characters: string) =>
-      pokemonType?.forEach(type => type.toLowerCase().includes(characters.toLowerCase()))
-        )
-    
-});
 
+  //   const fetchPokemon = async (url: string, next: boolean) => {
+  //     const response = await fetch(url)
+  //     const nextPokemon = await response.json()
 
- 
-const nextPage = async () => {
+  //     setOffet(next ? offset + 20 : offset - 20)
+  //     setPokemonDashboard((p) => [...p, nextPokemon])
+  // }
+
+  const searchedPokemon = [...sortByIndexPokemons].filter((data) => {
+    const pokemonType = data.types?.map((pokeType) => {
+      return pokeType.type.name;
+    });
+
+    return search.length === 0
+      ? true
+      : search.every((characters: string) =>
+          data.name.toLowerCase().includes(characters.toLowerCase())
+        ) ||
+          search.every((characters: string) =>
+            pokemonType?.forEach((type) =>
+              type.toLowerCase().includes(characters.toLowerCase())
+            )
+          );
+  });
+
+  const nextPage = async () => {
     let res = await axios.get(nextUrl);
     setNextUrl(res.data.next);
     res.data.results.forEach(async (pokemon: Results) => {
@@ -68,9 +85,6 @@ const nextPage = async () => {
       setPokemonDashboard((p) => [...p, poke.data]);
     });
   };
-
-
-
 
   return (
     <div className={styles.allContainer}>
@@ -89,25 +103,8 @@ const nextPage = async () => {
 
       <div className={styles.container}>
         {searchedPokemon.map((pokemon, index) => (
-          <PokemonCard index={index + offset} key={index} pokemon={pokemon} />
+          <PokemonCard index={index} key={index} pokemon={pokemon} />
         ))}
-
-        {/* <div className="mt-10 flex justify-center gap-5">
-          <button
-            disabled={!initialPokemon.previous}
-            className="disabled:bg-gray-500 px-3 py-1 bg-slate-900"
-            onClick={() => fetchPokemon(initialPokemon.previous, false)}
-          >
-            prev
-          </button>
-          <button
-            disabled={!initialPokemon.next}
-            className="disabled:bg-gray-500 px-3 py-1 bg-slate-900"
-            onClick={() => fetchPokemon(initialPokemon.next, true)}
-          >
-            next
-          </button>
-        </div> */}
       </div>
       <div className={styles.BtnContainer}>
         <button className={styles.LoadBtn} onClick={nextPage}>
@@ -116,17 +113,17 @@ const nextPage = async () => {
       </div>
     </div>
   );
-}
+};
 
-export default Home
+export default Home;
 
 export async function getStaticProps(context: GetStaticPropsContext) {
-  const response = await fetch("https://pokeapi.co/api/v2/pokemon")
-  const initialPokemon = await response.json()
+  const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
+  const initialPokemon = await response.json();
 
   return {
-      props: {
-          initialPokemon
-      }
-  }
+    props: {
+      initialPokemon,
+    },
+  };
 }
