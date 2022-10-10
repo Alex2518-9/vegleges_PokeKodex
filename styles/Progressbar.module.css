@@ -1,0 +1,23 @@
+.fillContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 35px;
+  width: 255px;
+  background: #19044d;
+  border-radius: 5px;
+  padding-left: 2px;
+}
+
+.progContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.3em;
+}
+
+.statName {
+  text-transform: uppercase;
+}

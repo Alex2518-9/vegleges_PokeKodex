@@ -1,35 +1,97 @@
-
-
-.detailContainer{
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #19044d;
-    color: #fff;
+.detailContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #19044d;
 }
 
-.detailCard{
-    max-width: 80%;
-    height: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #e7d068;
-   
+.detailCard {
+  display: flex;
+  width: 90%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/detailBg.png");
+  background-position: center;
+  border-radius: 10px;
 }
 
-.left{
-    width: 400px;
-    height: 500px;
-    padding: 5px;
+.left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  height: 500px;
+  padding: 5px;
 }
 
-.left ul{
-    display: flex;
-    justify-content: space-evenly;
-    
+.left h1 {
+  font-size: 2.5em;
+  font-family: "Silkscreen", cursive;
+  text-transform: uppercase;
 }
 
+.left ul {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.left ul li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  list-style: none;
+  padding: 10px;
+  background-color: #19044d;
+  color: #e7d068;
+  border-radius: 5px;
+}
+
+.right {
+  color: aliceblue;
+  width: 45%;
+  height: 500px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+
+.detailImage {
+  filter: drop-shadow(30px 10px 4px #152001);
+}
+
+.backBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  height: 25px;
+  width: 50px;
+  margin-top: -750px;
+  border-radius: 5px;
+  border: none;
+  color: #e7d068;
+  background-color: #19044d;
+  height: 30px;
+  transition: 0.2s ease-in-out all;
+  cursor: pointer;
+}
+
+.backBtn:hover {
+  transform: scale(1.05);
+}
+
+.bodyDetails {
+  font-size: 1.3em;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 10px;
+}
