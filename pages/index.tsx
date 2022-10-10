@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { GetStaticPropsContext, NextPage } from "next";
+import type { GetStaticPropsContext } from "next";
 import { useEffect, useState, useRef } from "react";
 import PokemonCard from "../components/PokemonCard";
 import { PokemonDetails, Results, Pokemons } from "../interfaces/Interface";
@@ -49,14 +49,6 @@ const Home = ({ initialPokemon }: any) => {
     let order = intl.compare(a.id.toString(), b.id.toString());
     return order;
   });
-
-  //   const fetchPokemon = async (url: string, next: boolean) => {
-  //     const response = await fetch(url)
-  //     const nextPokemon = await response.json()
-
-  //     setOffet(next ? offset + 20 : offset - 20)
-  //     setPokemonDashboard((p) => [...p, nextPokemon])
-  // }
 
   const searchedPokemon = [...sortByIndexPokemons].filter((data) => {
     const pokemonType = data.types?.map((pokeType) => {

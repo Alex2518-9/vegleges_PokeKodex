@@ -1,25 +1,33 @@
-import Image from 'next/image';
-import Link from 'next/link'
-import React from 'react'
-import { PokemonDetails } from '../interfaces/Interface';
-import styles from "../styles/PokemonCard.module.css"
-interface CardProps{
-    pokemon: PokemonDetails,
-    index: number
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import { PokemonDetails } from "../interfaces/Interface";
+import styles from "../styles/PokemonCard.module.css";
+interface CardProps {
+  pokemon: PokemonDetails;
+  index: number;
 }
-const PokemonCard = ({pokemon, index}: CardProps) => {
+const PokemonCard = ({ pokemon, index }: CardProps) => {
   return (
     <Link href={`/pokemon/${pokemon.name}`}>
       <div className={styles.Card}>
         <span className={styles.Card_id}>#{pokemon.id}</span>
-        <Image className={styles.Card_image} src={pokemon.sprites.front_default} alt={pokemon.name} width={200} height={200} />
+        <Image
+          className={styles.Card_image}
+          src={pokemon.sprites.front_default}
+          alt={pokemon.name}
+          width={200}
+          height={200}
+        />
         <p className={styles.Card_name}>{pokemon.name}</p>
-        <div className={styles.Card_type}>{pokemon.types?.map((type) => (
+        <div className={styles.Card_type}>
+          {pokemon.types?.map((type) => (
             <p key={type.type.name}>{type.type.name}</p>
-        ))}</div>
+          ))}
+        </div>
       </div>
     </Link>
   );
-}
+};
 
-export default PokemonCard
+export default PokemonCard;

@@ -15,7 +15,7 @@ const ProgressBar = ({ completed, statName }: BarProps) => {
             width: `${completed}px`,
             background: "#e7d068",
             paddingLeft: "10px",
-            borderRadius: '5px'
+            borderRadius: "5px",
           }}
           className={styles.filler}
         >

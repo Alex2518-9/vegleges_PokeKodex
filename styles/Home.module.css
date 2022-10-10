@@ -1,4 +1,4 @@
-.allContainer{
+.allContainer {
   display: flex;
   flex-direction: column;
   background: #04204d;
@@ -8,14 +8,14 @@
   height: 100vh;
 }
 
-.header{
+.header {
   display: flex;
   justify-content: space-around;
   align-items: center;
   max-width: 100vw;
 }
 
-.header input{
+.header input {
   width: 250px;
   height: 25px;
   border-radius: 5px;
@@ -32,7 +32,7 @@
   background: #04204d;
   padding: 1rem;
 }
-.BtnContainer{
+.BtnContainer {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -42,7 +42,7 @@
   padding-bottom: 10px;
 }
 
-.LoadBtn{
+.LoadBtn {
   width: 250px;
   height: 35px;
   cursor: pointer;
@@ -52,7 +52,7 @@
   font-size: 1.5em;
 }
 
-.LoadBtn:hover{
+.LoadBtn:hover {
   scale: 1.1;
   transition: 0.2s ease-in-out all;
 }

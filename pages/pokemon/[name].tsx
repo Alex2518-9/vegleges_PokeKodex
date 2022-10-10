@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, GetStaticPropsContext } from "next";
+import { GetServerSidePropsContext } from "next";
 import React from "react";
 import { EvolutionChain, PokemonDetails } from "../../interfaces/Interface";
 import styles from "../../styles/PokemonDetail.module.css";
@@ -12,8 +12,6 @@ interface PokemonProps extends PokemonDetails {
 }
 
 const Pokemon = ({ pokemon }: PokemonProps) => {
-
-
   const renderStats = () =>
     pokemon.stats?.map((stat, index) => (
       <ProgressBar
@@ -40,10 +38,9 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
   };
   renderEvolution();
 
-  
   return (
     <div className={styles.detailContainer}>
-      <div className={styles.detailCard} >
+      <div className={styles.detailCard}>
         <Link href={"/"}>
           <button className={styles.backBtn}>
             <IoIosArrowBack />
@@ -64,7 +61,6 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
           <div>{renderStats()}</div>
           <div className={styles.bodyDetails}>height: {pokemon.height}</div>
           <div className={styles.bodyDetails}>weight: {pokemon.weight}</div>
-          <div>{}</div>
         </div>
       </div>
     </div>
@@ -73,46 +69,15 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
 
 export default Pokemon;
 
-
-// export async function getStaticPaths() {
-//   const res = await fetch("https://pokeapi.co/api/v2/pokemon");
-//   const data = await res.json();
-
-//   const paths = data.results.map((pokemon: Results) => {
-//     return {
-//       params: { name: pokemon.name },
-//     };
-//   });
-//   return {
-//     paths: paths,
-//     fallback: false,
-//   };
-// }
-
-// export async function getStaticProps(context: GetStaticPropsContext) {
-//   if (!context.params) {
-//     return null;
-//   }
-//   const name = context.params.name;
-//   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-//   const pokemon = await response.json();
-
-//   return {
-//     props: {
-//       pokemon,
-//     },
-//   };
-// }
-
-
-
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${context.query.name}`)
-    const pokemon = await response.json()
+  const response = await fetch(
+    `https://pokeapi.co/api/v2/pokemon/${context.query.name}`
+  );
+  const pokemon = await response.json();
 
-    return {
-        props: {
-            pokemon
-        }
-    }
+  return {
+    props: {
+      pokemon,
+    },
+  };
 }
