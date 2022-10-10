@@ -74,45 +74,45 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
 export default Pokemon;
 
 
-export async function getStaticPaths() {
-  const res = await fetch("https://pokeapi.co/api/v2/pokemon");
-  const data = await res.json();
+// export async function getStaticPaths() {
+//   const res = await fetch("https://pokeapi.co/api/v2/pokemon");
+//   const data = await res.json();
 
-  const paths = data.results.map((pokemon: Results) => {
-    return {
-      params: { name: pokemon.name },
-    };
-  });
-  return {
-    paths: paths,
-    fallback: false,
-  };
-}
-
-export async function getStaticProps(context: GetStaticPropsContext) {
-  if (!context.params) {
-    return null;
-  }
-  const name = context.params.name;
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-  const pokemon = await response.json();
-
-  return {
-    props: {
-      pokemon,
-    },
-  };
-}
-
-
-
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${context.query.name}`)
-//     const pokemon = await response.json()
-
+//   const paths = data.results.map((pokemon: Results) => {
 //     return {
-//         props: {
-//             pokemon
-//         }
-//     }
+//       params: { name: pokemon.name },
+//     };
+//   });
+//   return {
+//     paths: paths,
+//     fallback: false,
+//   };
 // }
+
+// export async function getStaticProps(context: GetStaticPropsContext) {
+//   if (!context.params) {
+//     return null;
+//   }
+//   const name = context.params.name;
+//   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+//   const pokemon = await response.json();
+
+//   return {
+//     props: {
+//       pokemon,
+//     },
+//   };
+// }
+
+
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${context.query.name}`)
+    const pokemon = await response.json()
+
+    return {
+        props: {
+            pokemon
+        }
+    }
+}
