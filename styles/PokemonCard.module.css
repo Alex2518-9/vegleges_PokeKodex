@@ -17,9 +17,8 @@
 
 .Card_id {
   background: #e4c439;
-  width: 3rem;
   color: #fff;
-  padding: 0.1rem;
+  padding: 4px 8px 4px 8px;
   font-weight: 700;
   position: absolute;
   border-radius: 0 0 10px 0;

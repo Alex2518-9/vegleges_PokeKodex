@@ -16,6 +16,10 @@
   position: static;
 }
 
+.header h2{
+  cursor: pointer;
+}
+
 .header input {
   width: 250px;
   height: 30px;
@@ -60,4 +64,20 @@
 .LoadBtn:hover {
   scale: 1.1;
   transition: 0.2s ease-in-out all;
+}
+
+.search{
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+}
+
+.searchBtn{
+  height: 30px;
+  width: 30px;
+  border-radius: 5px;
+  border: none;
+  background: darkorchid;
+  color: #04204d;
+  cursor: pointer;
 }
