@@ -1,31 +1,26 @@
-import axios from "axios";
 import type { GetStaticPropsContext } from "next";
 import { useEffect, useState, useRef } from "react";
 import PokemonCard from "../components/PokemonCard";
 import { PokemonDetails, Results, Pokemons } from "../interfaces/Interface";
 import styles from "../styles/Home.module.css";
+import Link from "next/link";
 
 const Home = ({ initialPokemon }: any) => {
   const [pokemonDashboard, setPokemonDashboard] = useState<PokemonDetails[]>(
     []
   );
-  const [allPokemon, setAllPokemon] = useState<Pokemons>(initialPokemon);
   const [search, setSearch] = useState<string[]>([]);
-  const [nextUrl, setNextUrl] = useState<string>(initialPokemon.next);
-
   const stopFetch = useRef(false);
+
+  const allPokemon: Pokemons = initialPokemon;
 
   const getPokemon = async () => {
     allPokemon.results.map(async (pokemon: Results) => {
-      if (pokemonDashboard.length < 20) {
-        const res = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
-        );
-        const data = await res.json();
-        setPokemonDashboard((p) => [...p, data]);
-      } else {
-        return null;
-      }
+      const res = await fetch(
+        `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
+      );
+      const data = await res.json();
+      setPokemonDashboard((p) => [...p, data]);
     });
   };
 
@@ -38,7 +33,7 @@ const Home = ({ initialPokemon }: any) => {
     }
   }, []);
 
-  const sortByIndexPokemons = [...pokemonDashboard].sort((a, b) => {
+  const sortPokemonsByIndex = [...pokemonDashboard].sort((a, b) => {
     const intl = Intl.Collator(undefined, {
       numeric: true,
     });
@@ -46,47 +41,31 @@ const Home = ({ initialPokemon }: any) => {
     return order;
   });
 
-  const searchedPokemon = [...sortByIndexPokemons].filter((data) => {
-    const pokemonType = data.types?.map((pokeType) => {
-      return pokeType.type.name;
-    });
-
+  const searchedPokemon = [...sortPokemonsByIndex].filter((data) => {
     return search.length === 0
       ? true
       : search.every((characters: string) =>
           data.name.toLowerCase().includes(characters.toLowerCase())
-        ) ||
-          search.every((characters: string) =>
-            pokemonType?.forEach((type) =>
-              type.toLowerCase().includes(characters.toLowerCase())
-            )
-          );
+        );
   });
-
-  const loadNextTwentyPokemon = async () => {
-    let res = await axios.get(nextUrl);
-    setNextUrl(res.data.next);
-    res.data.results.forEach(async (pokemon: Results) => {
-      const poke = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
-      );
-      setPokemonDashboard((p) => [...p, poke.data]);
-    });
-  };
 
   return (
     <div className={styles.allContainer}>
       <div className={styles.header}>
-        <h2>Pokemon kodex</h2>
-        <input
-          type="text"
-          placeholder="Search pokemon..."
-          onChange={(e) =>
-            setSearch(
-              e.target.value.trim() ? e.target.value.trim().split(" ") : []
-            )
-          }
-        />
+        <Link href={"/"}>
+          <h2>Pokemon kodex</h2>
+        </Link>
+        <div className={styles.search}>
+          <input
+            type="text"
+            placeholder="Search pokemon..."
+            onChange={(e) =>
+              setSearch(
+                e.target.value.trim() ? e.target.value.trim().split(" ") : []
+              )
+            }
+          />
+        </div>
       </div>
 
       <div className={styles.container}>
@@ -94,11 +73,7 @@ const Home = ({ initialPokemon }: any) => {
           <PokemonCard index={index} key={index} pokemon={pokemon} />
         ))}
       </div>
-      <div className={styles.BtnContainer}>
-        <button className={styles.LoadBtn} onClick={loadNextTwentyPokemon}>
-          Load more
-        </button>
-      </div>
+      <div className={styles.BtnContainer}></div>
     </div>
   );
 };
@@ -106,12 +81,18 @@ const Home = ({ initialPokemon }: any) => {
 export default Home;
 
 export async function getStaticProps(context: GetStaticPropsContext) {
-  const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
-  const initialPokemon = await response.json();
-
-  return {
-    props: {
-      initialPokemon,
-    },
-  };
+  try {
+    const limit = "1154";
+    const response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon?limit=${limit}`
+    );
+    const initialPokemon = await response.json();
+    return {
+      props: {
+        initialPokemon,
+      },
+    };
+  } catch (error) {
+    return { error: error };
+  }
 }

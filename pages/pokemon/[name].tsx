@@ -37,6 +37,8 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
     });
   };
 
+  console.log(pokemon.name,pokemon.sprites.front_default);
+  
   return (
     <div className={styles.detailContainer}>
       <div className={styles.detailCard}>
@@ -57,7 +59,7 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
           <ul>{renderTypes()}</ul>
         </div>
         <div className={styles.right}>
-          <div>{renderStats()}</div>
+          <div className={styles.pokeStats}>{renderStats()}</div>
           <div className={styles.bodyDetails}>height: {pokemon.height}</div>
           <div className={styles.bodyDetails}>weight: {pokemon.weight} lbs</div>
         </div>

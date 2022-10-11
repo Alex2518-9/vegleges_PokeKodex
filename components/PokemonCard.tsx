@@ -12,13 +12,15 @@ const PokemonCard = ({ pokemon, index }: CardProps) => {
     <Link href={`/pokemon/${pokemon.name}`}>
       <div className={styles.Card}>
         <span className={styles.Card_id}>#{pokemon.id}</span>
-        <Image
-          className={styles.Card_image}
-          src={pokemon.sprites.front_default}
-          alt={pokemon.name}
-          width={200}
-          height={200}
-        />
+        {pokemon.sprites.front_default && (
+          <Image
+            className={styles.Card_image}
+            src={pokemon.sprites.front_default}
+            alt={pokemon.name}
+            width={200}
+            height={200}
+          />
+        )}
         <p className={styles.Card_name}>{pokemon.name}</p>
         <div className={styles.Card_type}>
           {pokemon.types?.map((type) => (
