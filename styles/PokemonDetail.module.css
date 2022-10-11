@@ -16,6 +16,7 @@
   justify-content: center;
   align-items: center;
   background-image: url("/detailBg.png");
+  background-size: cover;
   background-position: center;
   border-radius: 10px;
 }

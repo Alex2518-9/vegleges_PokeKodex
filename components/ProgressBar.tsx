@@ -19,7 +19,7 @@ const ProgressBar = ({ completed, statName }: BarProps) => {
           }}
           className={styles.filler}
         >
-          <span>{` ${completed}`}</span>
+          <span className={styles.Completed}>{` ${completed}`}</span>
         </div>
       </div>
       <span>255</span>

@@ -21,3 +21,7 @@
 .statName {
   text-transform: uppercase;
 }
+
+.Completed {
+  color: #19044d;
+}

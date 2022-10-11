@@ -36,7 +36,6 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
       console.log(chain);
     });
   };
-  renderEvolution();
 
   return (
     <div className={styles.detailContainer}>
@@ -60,7 +59,7 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
         <div className={styles.right}>
           <div>{renderStats()}</div>
           <div className={styles.bodyDetails}>height: {pokemon.height}</div>
-          <div className={styles.bodyDetails}>weight: {pokemon.weight}</div>
+          <div className={styles.bodyDetails}>weight: {pokemon.weight} lbs</div>
         </div>
       </div>
     </div>

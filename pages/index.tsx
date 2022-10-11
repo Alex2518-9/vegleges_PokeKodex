@@ -10,14 +10,10 @@ const Home = ({ initialPokemon }: any) => {
     []
   );
   const [allPokemon, setAllPokemon] = useState<Pokemons>(initialPokemon);
-  const [offset, setOffet] = useState(0);
   const [search, setSearch] = useState<string[]>([]);
   const [nextUrl, setNextUrl] = useState<string>(initialPokemon.next);
 
   const stopFetch = useRef(false);
-
-  console.log(pokemonDashboard);
-  // console.log(allPokemon);
 
   const getPokemon = async () => {
     allPokemon.results.map(async (pokemon: Results) => {
@@ -67,7 +63,7 @@ const Home = ({ initialPokemon }: any) => {
           );
   });
 
-  const nextPage = async () => {
+  const loadNextTwentyPokemon = async () => {
     let res = await axios.get(nextUrl);
     setNextUrl(res.data.next);
     res.data.results.forEach(async (pokemon: Results) => {
@@ -99,7 +95,7 @@ const Home = ({ initialPokemon }: any) => {
         ))}
       </div>
       <div className={styles.BtnContainer}>
-        <button className={styles.LoadBtn} onClick={nextPage}>
+        <button className={styles.LoadBtn} onClick={loadNextTwentyPokemon}>
           Load more
         </button>
       </div>
