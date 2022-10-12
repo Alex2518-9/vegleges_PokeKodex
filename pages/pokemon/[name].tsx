@@ -33,12 +33,11 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
       const data: Results = await res.json();
       const response = await fetch(data.url);
       const chain: EvolutionChain[] = await response.json();
-      console.log(chain);
     });
   };
 
-  console.log(pokemon.name,pokemon.sprites.front_default);
-  
+  console.log(pokemon.name, pokemon.sprites.front_default);
+
   return (
     <div className={styles.detailContainer}>
       <div className={styles.detailCard}>

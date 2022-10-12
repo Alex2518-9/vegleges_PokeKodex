@@ -32,3 +32,18 @@
   display: flex;
   justify-content: space-between;
 }
+
+@media screen and (max-width: 990px) {
+  .statData {
+    width: 200px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .statData {
+    width: 100px;
+  }
+  .fillContainer {
+    width: 50px;
+  }
+}
