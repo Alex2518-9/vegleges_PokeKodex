@@ -1,14 +1,14 @@
 import { GetServerSidePropsContext } from "next";
 import React from "react";
-import { EvolutionChain, PokemonDetails } from "../../interfaces/Interface";
+import { EvolutionChain, PokemonDetail } from "../../interfaces/Interface";
 import styles from "../../styles/PokemonDetail.module.css";
 import { Results } from "../../interfaces/Interface";
 import Image from "next/image";
 import { IoIosArrowBack } from "react-icons/io";
 import Link from "next/link";
 import ProgressBar from "../../components/ProgressBar";
-interface PokemonProps extends PokemonDetails {
-  pokemon: PokemonDetails;
+interface PokemonProps extends PokemonDetail {
+  pokemon: PokemonDetail;
 }
 
 const Pokemon = ({ pokemon }: PokemonProps) => {

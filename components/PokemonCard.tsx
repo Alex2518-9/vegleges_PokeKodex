@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { PokemonDetails } from "../interfaces/Interface";
+import { PokemonDetail } from "../interfaces/Interface";
 import styles from "../styles/PokemonCard.module.css";
 interface CardProps {
-  pokemon: PokemonDetails;
+  pokemon: PokemonDetail;
   index: number;
 }
 const PokemonCard = ({ pokemon, index }: CardProps) => {

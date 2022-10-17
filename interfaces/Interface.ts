@@ -4,12 +4,13 @@ export interface Results {
 }
 
 export interface Pokemons {
+  count: number,
   next: string,
   previous: string,
   results: Results[]
 }
 
-export interface PokemonDetails {
+export interface PokemonDetail {
   id: number;
   name: string;
   sprites: {
@@ -44,7 +45,7 @@ export interface PokemonDetails {
   species: {
     url: string,
   }
-}[];
+};
 
 
 export interface EvolutionChain {

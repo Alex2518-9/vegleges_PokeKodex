@@ -1,39 +1,13 @@
-import type { GetStaticPropsContext } from "next";
 import { useEffect, useState, useRef } from "react";
 import PokemonCard from "../components/PokemonCard";
-import { PokemonDetails, Results, Pokemons } from "../interfaces/Interface";
+import { PokemonDetail, Results, Pokemons } from "../interfaces/Interface";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 
-const Home = ({ initialPokemon }: any) => {
-  const [pokemonDashboard, setPokemonDashboard] = useState<PokemonDetails[]>(
-    []
-  );
+const Home = ({ pokemons }: { pokemons: PokemonDetail[] }) => {
   const [search, setSearch] = useState<string[]>([]);
-  const stopFetch = useRef(false);
 
-  const allPokemon: Pokemons = initialPokemon;
-
-  const getPokemon = async () => {
-    allPokemon.results.map(async (pokemon: Results) => {
-      const res = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
-      );
-      const data = await res.json();
-      setPokemonDashboard((p) => [...p, data]);
-    });
-  };
-
-  useEffect(() => {
-    if (stopFetch.current === false) {
-      getPokemon();
-      return () => {
-        stopFetch.current = true;
-      };
-    }
-  }, []);
-
-  const sortPokemonsByIndex = [...pokemonDashboard].sort((a, b) => {
+  const sortPokemonsByIndex = [...pokemons].sort((a, b) => {
     const intl = Intl.Collator(undefined, {
       numeric: true,
     });
@@ -80,16 +54,47 @@ const Home = ({ initialPokemon }: any) => {
 
 export default Home;
 
-export async function getStaticProps(context: GetStaticPropsContext) {
+export async function getServerSideProps() {
   try {
-    const limit = "1154";
-    const response = await fetch(
-      `https://pokeapi.co/api/v2/pokemon?limit=${limit}`
-    );
-    const initialPokemon = await response.json();
+    let fetched = 0;
+    let total = -1;
+    let pokemons: PokemonDetail[] = [];
+
+    while (fetched < total || total === -1) {
+      const response = await fetch(
+        `https://pokeapi.co/api/v2/pokemon?offset=${fetched}&limit=1000`
+      );
+      const res: Pokemons = await response.json();
+
+      let n = 0;
+      let m = n + 100;
+      let chunkArray = res.results.slice(n, m);
+
+      while (m <= res.results.length) {
+        const pokemonBatch = await Promise.all(
+          chunkArray.map(async (data) => {
+            console.log(`fetching ${data.name}`);
+
+            const defaultData = await fetch(
+              `https://pokeapi.co/api/v2/pokemon/${data.name}`
+            );
+            console.log(`received ${data.name}`);
+            const details: PokemonDetail = await defaultData.json();
+            return details;
+          })
+        );
+        pokemons = [...pokemons, ...pokemonBatch];
+        n += 100;
+        m = n + 100;
+        chunkArray = res.results.slice(n, m);
+      }
+      fetched += res.results.length;
+      total = res.count;
+      console.log(`processed batch ${fetched}`);
+    }
     return {
       props: {
-        initialPokemon,
+        pokemons,
       },
     };
   } catch (error) {
