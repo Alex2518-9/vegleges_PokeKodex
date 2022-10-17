@@ -7,13 +7,16 @@ import Link from "next/link";
 const Home = ({ pokemons }: { pokemons: PokemonDetail[] }) => {
   const [search, setSearch] = useState<string[]>([]);
 
-  const sortPokemonsByIndex = [...pokemons].sort((a, b) => {
-    const intl = Intl.Collator(undefined, {
-      numeric: true,
+  const sortPokemonsByIndex = useMemo(() => {
+    const sorting = [...pokemons].sort((a, b) => {
+      const intl = Intl.Collator(undefined, {
+        numeric: true,
+      });
+      let order = intl.compare(a.id.toString(), b.id.toString());
+      return order;
     });
-    let order = intl.compare(a.id.toString(), b.id.toString());
-    return order;
-  });
+    return sorting;
+  }, [pokemons]);
 
   const searchedPokemon = useMemo(() => {
     const searching = [...sortPokemonsByIndex].filter((data) => {
