@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useMemo, useState } from "react";
 import PokemonCard from "../components/PokemonCard";
-import { PokemonDetail, Results, Pokemons } from "../interfaces/Interface";
+import { PokemonDetail, Pokemons } from "../interfaces/Interface";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 
@@ -15,13 +15,16 @@ const Home = ({ pokemons }: { pokemons: PokemonDetail[] }) => {
     return order;
   });
 
-  const searchedPokemon = [...sortPokemonsByIndex].filter((data) => {
-    return search.length === 0
-      ? true
-      : search.every((characters: string) =>
-          data.name.toLowerCase().includes(characters.toLowerCase())
-        );
-  });
+  const searchedPokemon = useMemo(() => {
+    const searching = [...sortPokemonsByIndex].filter((data) => {
+      return search.length === 0
+        ? true
+        : search.every((characters: string) =>
+            data.name.toLowerCase().includes(characters.toLowerCase())
+          );
+    });
+    return searching;
+  }, [sortPokemonsByIndex, search]);
 
   return (
     <div className={styles.allContainer}>
