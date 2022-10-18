@@ -1,43 +1,17 @@
 import { GetServerSidePropsContext } from "next";
 import React from "react";
-import { EvolutionChain, PokemonDetail } from "../../interfaces/Interface";
+import { PokemonDetail } from "../../interfaces/Interface";
 import styles from "../../styles/PokemonDetail.module.css";
-import { Results } from "../../interfaces/Interface";
 import Image from "next/image";
 import { IoIosArrowBack } from "react-icons/io";
 import Link from "next/link";
-import ProgressBar from "../../components/ProgressBar";
-interface PokemonProps extends PokemonDetail {
+import PokemonStats from "../../components/PokemonStats";
+import PokemonTypes from "../../components/PokemonTypes";
+export interface PokemonProps extends PokemonDetail {
   pokemon: PokemonDetail;
 }
 
 const Pokemon = ({ pokemon }: PokemonProps) => {
-  const renderStats = () =>
-    pokemon.stats?.map((stat, index) => (
-      <ProgressBar
-        key={index}
-        completed={stat.base_stat}
-        statName={stat.stat.name}
-      />
-    ));
-
-  const renderTypes = () =>
-    pokemon.types?.map((type, index) => (
-      <li key={index} style={{ textDecoration: "none" }}>
-        {type.type.name}
-      </li>
-    ));
-
-  const renderEvolution = async () => {
-    await fetch(pokemon.species.url).then(async (res) => {
-      const data: Results = await res.json();
-      const response = await fetch(data.url);
-      const chain: EvolutionChain[] = await response.json();
-    });
-  };
-
-  console.log(pokemon.name, pokemon.sprites.front_default);
-
   return (
     <div className={styles.detailContainer}>
       <div className={styles.detailCard}>
@@ -55,10 +29,14 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
             height={400}
             width={400}
           />
-          <ul>{renderTypes()}</ul>
+          <ul>
+            <PokemonTypes pokemon={pokemon} />
+          </ul>
         </div>
         <div className={styles.right}>
-          <div className={styles.pokeStats}>{renderStats()}</div>
+          <div className={styles.pokeStats}>
+            <PokemonStats pokemon={pokemon} />
+          </div>
           <div className={styles.bodyDetails}>height: {pokemon.height}</div>
           <div className={styles.bodyDetails}>weight: {pokemon.weight} lbs</div>
         </div>
