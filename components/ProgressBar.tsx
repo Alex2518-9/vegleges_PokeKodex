@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../styles/Progressbar.module.css";
+import { Line } from "rc-progress";
 
 interface BarProps {
   completed: number;
@@ -8,23 +9,17 @@ interface BarProps {
 const ProgressBar = ({ completed, statName }: BarProps) => {
   return (
     <div className={styles.progContainer}>
-      <span className={styles.statName}>{`${statName}:`}</span>
+      <div className={styles.statName}>{statName}</div>
       <div className={styles.statData}>
-        <div className={styles.fillContainer}>
-          <div
-            style={{
-              width: `${completed}px`,
-              background: "#e7d068",
-              paddingLeft: "10px",
-              borderRadius: "5px",
-            }}
-            className={styles.filler}
-          >
-            <span className={styles.Completed}>{` ${completed}`}</span>
-          </div>
-        </div>
-        <div>255</div>
+        <Line
+          percent={(completed / 255) * 100}
+          strokeColor="#3d1d8f"
+          strokeWidth={5}
+          trailWidth={5}
+        />
+        <span className={styles.Completed}>{` ${completed}`}</span>
       </div>
+      <div>255</div>
     </div>
   );
 };
