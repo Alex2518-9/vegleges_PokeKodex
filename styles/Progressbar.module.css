@@ -24,11 +24,12 @@
 }
 
 .Completed {
-  color: #19044d;
+  color: #e4c439;
+  
 }
 
 .statData {
-  width: 400px;
+  width: 300px;
   display: flex;
   justify-content: space-between;
 }
