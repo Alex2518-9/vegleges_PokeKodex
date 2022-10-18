@@ -1,11 +1,20 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import PokemonCard from "../components/PokemonCard";
 import { PokemonDetail, Pokemons } from "../interfaces/Interface";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
+import { useQueryState } from "next-usequerystate";
+import { queryTypes } from "next-usequerystate";
+import { useRouter } from "next/router";
+import { dehydrate, QueryClient, useQuery } from "react-query";
+import { GetServerSidePropsContext } from "next";
 
 const Home = ({ pokemons }: { pokemons: PokemonDetail[] }) => {
-  const [search, setSearch] = useState<string[]>([]);
+  const [name, setName] = useQueryState(
+    "name",
+    queryTypes.array(queryTypes.string)
+  );
+  const { data } = useQuery<PokemonDetail[]>(["pokemon", name], getPokemonData);
 
   const sortPokemonsByIndex = useMemo(() => {
     const sorting = [...pokemons].sort((a, b) => {
@@ -18,16 +27,24 @@ const Home = ({ pokemons }: { pokemons: PokemonDetail[] }) => {
     return sorting;
   }, [pokemons]);
 
-  const searchedPokemon = useMemo(() => {
+  const searchedPokemonByName = useMemo(() => {
     const searching = [...sortPokemonsByIndex].filter((data) => {
-      return search.length === 0
+      return !name
         ? true
-        : search.every((characters: string) =>
+        : name.every((characters) =>
             data.name.toLowerCase().includes(characters.toLowerCase())
           );
     });
     return searching;
-  }, [sortPokemonsByIndex, search]);
+  }, [sortPokemonsByIndex, name]);
+
+  const { query } = useRouter();
+
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTimeout(() => {
+      setName(e.target.value.trim() ? e.target.value.trim().split(" ") : []);
+    }, 1000);
+  };
 
   return (
     <div className={styles.allContainer}>
@@ -37,19 +54,16 @@ const Home = ({ pokemons }: { pokemons: PokemonDetail[] }) => {
         </Link>
         <div className={styles.search}>
           <input
+            value={query.name || undefined}
             type="text"
             placeholder="Search pokemon..."
-            onChange={(e) =>
-              setSearch(
-                e.target.value.trim() ? e.target.value.trim().split(" ") : []
-              )
-            }
+            onChange={(e) => onSearch(e)}
           />
         </div>
       </div>
 
       <div className={styles.container}>
-        {searchedPokemon.map((pokemon, index) => (
+        {searchedPokemonByName.map((pokemon, index) => (
           <PokemonCard index={index} key={index} pokemon={pokemon} />
         ))}
       </div>
@@ -60,50 +74,25 @@ const Home = ({ pokemons }: { pokemons: PokemonDetail[] }) => {
 
 export default Home;
 
-export async function getServerSideProps() {
-  try {
-    let fetched = 0;
-    let total = -1;
-    let pokemons: PokemonDetail[] = [];
+const getPokemonData = async (key: string, name: string) =>
+  await (
+    await fetch("/api/getPokemons", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(name),
+    })
+  ).json();
 
-    while (fetched < total || total === -1) {
-      const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon?offset=${fetched}&limit=1000`
-      );
-      const res: Pokemons = await response.json();
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery<PokemonDetail[]>(
+    ["pokemon", context.query ? context.query : null],
+    getPokemonData
+  );
 
-      let n = 0;
-      let m = n + 100;
-      let chunkArray = res.results.slice(n, m);
-
-      while (m <= res.results.length) {
-        const pokemonBatch = await Promise.all(
-          chunkArray.map(async (data) => {
-            console.log(`fetching ${data.name}`);
-
-            const defaultData = await fetch(
-              `https://pokeapi.co/api/v2/pokemon/${data.name}`
-            );
-            console.log(`received ${data.name}`);
-            const details: PokemonDetail = await defaultData.json();
-            return details;
-          })
-        );
-        pokemons = [...pokemons, ...pokemonBatch];
-        n += 100;
-        m = n + 100;
-        chunkArray = res.results.slice(n, m);
-      }
-      fetched += res.results.length;
-      total = res.count;
-      console.log(`processed batch ${fetched}`);
-    }
-    return {
-      props: {
-        pokemons,
-      },
-    };
-  } catch (error) {
-    return { error: error };
-  }
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
 }
