@@ -6,19 +6,8 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["raw.githubusercontent.com"],
+    domains: ['raw.githubusercontent.com'],
   },
-};
+}
 
-module.exports = nextConfig;
-// {
-//   async rewrites() {
-//     return [
-//       // Rewrite everything else to use `pages/index`
-//       {
-//         source: "/:path*",
-//         destination: "/",
-//       },
-//     ];
-//   },
-// };
+module.exports = nextConfig

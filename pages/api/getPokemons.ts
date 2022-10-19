@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { PokemonDetail, Pokemons } from "../../interfaces/Interface";
 
 export default async function fetchPokemons(req: NextApiRequest, res: NextApiResponse) {
-    const { name }: { name: string } = req.body
+    const name = req.body?.name
     try {
         let fetched = 0;
         let total = -1;
