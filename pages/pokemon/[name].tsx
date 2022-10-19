@@ -1,21 +1,21 @@
-import { GetServerSidePropsContext } from "next";
-import React from "react";
-import { PokemonDetail } from "../../interfaces/Interface";
-import styles from "../../styles/PokemonDetail.module.css";
-import Image from "next/image";
-import { IoIosArrowBack } from "react-icons/io";
-import Link from "next/link";
-import PokemonStats from "../../components/PokemonStats";
-import PokemonTypes from "../../components/PokemonTypes";
+import { GetServerSidePropsContext } from 'next'
+import React from 'react'
+import { PokemonDetail } from '../../interfaces/Interface'
+import styles from '../../styles/PokemonDetail.module.css'
+import Image from 'next/image'
+import { IoIosArrowBack } from 'react-icons/io'
+import Link from 'next/link'
+import PokemonStats from '../../components/PokemonStats'
+import PokemonTypes from '../../components/PokemonTypes'
 export interface PokemonProps extends PokemonDetail {
-  pokemon: PokemonDetail;
+  pokemon: PokemonDetail
 }
 
 const Pokemon = ({ pokemon }: PokemonProps) => {
   return (
     <div className={styles.detailContainer}>
       <div className={styles.detailCard}>
-        <Link href={"/"}>
+        <Link href={'/'}>
           <button className={styles.backBtn}>
             <IoIosArrowBack />
           </button>
@@ -42,20 +42,18 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Pokemon;
+export default Pokemon
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon/${context.query.name}`
-  );
-  const pokemon = await response.json();
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${context.query.name}`)
+  const pokemon = await response.json()
 
   return {
     props: {
       pokemon,
     },
-  };
+  }
 }

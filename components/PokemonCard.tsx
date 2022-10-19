@@ -1,13 +1,13 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import { PokemonDetail } from "../interfaces/Interface";
-import styles from "../styles/PokemonCard.module.css";
+import Image from 'next/image'
+import Link from 'next/link'
+import React from 'react'
+import { PokemonDetail } from '../interfaces/Interface'
+import styles from '../styles/PokemonCard.module.css'
 interface CardProps {
-  pokemon: PokemonDetail;
-  index: number;
+  pokemon: PokemonDetail
+  index?: number
 }
-const PokemonCard = ({ pokemon, index }: CardProps) => {
+const PokemonCard = ({ pokemon }: CardProps) => {
   return (
     <Link href={`/pokemon/${pokemon.name}`}>
       <div className={styles.Card}>
@@ -29,7 +29,7 @@ const PokemonCard = ({ pokemon, index }: CardProps) => {
         </div>
       </div>
     </Link>
-  );
-};
+  )
+}
 
-export default PokemonCard;
+export default PokemonCard
