@@ -1,25 +1,33 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useCallback } from 'react'
 import PokemonCard from '../components/PokemonCard'
-import { PokemonDetail, Pokemons } from '../interfaces/Interface'
+import { PokemonDetail } from '../interfaces/Interface'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
-import { useQueryState } from 'next-usequerystate'
-import { queryTypes } from 'next-usequerystate'
 import Router, { useRouter } from 'next/router'
-import { QueryClient, useQuery, dehydrate, DehydratedState } from 'react-query'
+import { useQuery } from 'react-query'
 import { GetServerSidePropsContext } from 'next'
-import axios from 'axios'
+import debounce from 'lodash.debounce'
 
-const Home = ({dehydratedState}: {dehydratedState : DehydratedState}) => {
-  const [name, setName] = useState<string>('')
-
-  const { data } = useQuery<PokemonDetail[]>(['pokemon', name], () => getPokemonData(name.split(' ')), {
-    enabled: !!name,
-  })
+const Home = ({ pokemons, url }: { pokemons: PokemonDetail[]; url: string }) => {
   const { query, basePath } = useRouter()
+  const queryName = query.name
+  const [name, setName] = useState<string>(queryName ? (queryName as string) : '')
+
+  const { data } = useQuery<PokemonDetail[]>(
+    ['pokemons', name],
+    () => {
+      return name.length > 0 ? getPokemonData(url, name.split(' ')) : getPokemonData(url)
+    },
+    {
+      enabled: !!name,
+    }
+  )
+
+  const dataToDisplay = name ? data : pokemons
+  // console.log(pokemons)
 
   const sortPokemonsByIndex = useMemo(() => {
-    const sorting = data?.sort((a, b) => {
+    const sorting = dataToDisplay?.sort((a, b) => {
       const intl = Intl.Collator(undefined, {
         numeric: true,
       })
@@ -27,28 +35,36 @@ const Home = ({dehydratedState}: {dehydratedState : DehydratedState}) => {
       return order
     })
     return sorting
-  }, [data])
-
-  const searchedPokemonByName = useMemo(() => {
-    const searching = sortPokemonsByIndex?.filter((data) => {
-      return !name ? true : data.name.toLowerCase().includes(name.toLowerCase())
-    })
-    return searching
-  }, [sortPokemonsByIndex, name])
+  }, [dataToDisplay])
 
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeout(() => {
-      setName(e.target.value.trim())
-      Router.replace(
-        basePath,
-        e.target.value.trim().length > 0
-          ? {
-              query: { ...query, name: e.target.value.trim() },
-            }
-          : process.env.BASE_URI!
-      )
-    }, 1000)
+    setName(e.target.value.trim())
   }
+
+  const debouncedChangeHandler = useMemo(() => debounce(onSearch, 300), [name])
+
+  // const replaceUrl = useMemo(
+  //   () =>
+  //     Router.replace(
+  //       basePath,
+  //       name.length > 0
+  //         ? {
+  //             query: { ...query, name: name },
+  //           }
+  //         : process.env.BASE_URI!
+  //     ),
+  //   [debouncedChangeHandler]
+  // )
+  useEffect(() => {
+    Router.replace(
+      basePath,
+      name.length > 0
+        ? {
+            query: { ...query, name: name },
+          }
+        : process.env.BASE_URI!
+    )
+  }, [debouncedChangeHandler])
 
   return (
     <div className={styles.allContainer}>
@@ -57,17 +73,12 @@ const Home = ({dehydratedState}: {dehydratedState : DehydratedState}) => {
           <h2>Pokemon kodex</h2>
         </Link>
         <div className={styles.search}>
-          <input
-            value={query.name || undefined}
-            type="text"
-            placeholder="Search pokemon..."
-            onChange={(e) => onSearch(e)}
-          />
+          <input defaultValue={name} type="text" placeholder="Search pokemon..." onChange={(e) => onSearch(e)} />
         </div>
       </div>
 
       <div className={styles.container}>
-        {searchedPokemonByName?.map((pokemon, index) => (
+        {sortPokemonsByIndex?.map((pokemon, index) => (
           <PokemonCard index={index} key={index} pokemon={pokemon} />
         ))}
       </div>
@@ -78,27 +89,24 @@ const Home = ({dehydratedState}: {dehydratedState : DehydratedState}) => {
 
 export default Home
 
-const getPokemonData = async (searchName?: string[], url?: string) =>
+const getPokemonData = async (url: string, searchName?: string[]): Promise<PokemonDetail[]> =>
   await (
-    await fetch(`${process.env.BASE_URI!}/api/getPokemons`, {
+    await fetch(`http://${url}/api/getPokemons`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(searchName),
+      body: JSON.stringify({ name: searchName }),
     })
   ).json()
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const alma = context.params;
-  console.log(alma);
-  
-  const queryClient = new QueryClient()
-  await queryClient.prefetchQuery<PokemonDetail[]>('pokemon', () => getPokemonData())
+  const { host } = context.req.headers
 
   return {
     props: {
-      dehydratedState: dehydrate(queryClient),
+      pokemons: await getPokemonData(host || ''),
+      url: host,
     },
   }
 }
