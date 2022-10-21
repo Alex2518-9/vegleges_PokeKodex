@@ -24,7 +24,6 @@ const Home = ({ pokemons, url }: { pokemons: PokemonDetail[]; url: string }) => 
   )
 
   const dataToDisplay = name ? data : pokemons
-  // console.log(pokemons)
 
   const sortPokemonsByIndex = useMemo(() => {
     const sorting = dataToDisplay?.sort((a, b) => {
@@ -43,18 +42,7 @@ const Home = ({ pokemons, url }: { pokemons: PokemonDetail[]; url: string }) => 
 
   const debouncedChangeHandler = useMemo(() => debounce(onSearch, 300), [name])
 
-  // const replaceUrl = useMemo(
-  //   () =>
-  //     Router.replace(
-  //       basePath,
-  //       name.length > 0
-  //         ? {
-  //             query: { ...query, name: name },
-  //           }
-  //         : process.env.BASE_URI!
-  //     ),
-  //   [debouncedChangeHandler]
-  // )
+
   useEffect(() => {
     Router.replace(
       basePath,
